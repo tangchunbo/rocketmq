@@ -41,6 +41,9 @@ import org.apache.rocketmq.srvutil.ServerUtil;
 import org.apache.rocketmq.srvutil.ShutdownHookThread;
 import org.slf4j.LoggerFactory;
 
+/**
+ *  NameServer 启动类
+ */
 public class NamesrvStartup {
 
     private static InternalLogger log;
@@ -79,15 +82,20 @@ public class NamesrvStartup {
             return null;
         }
 
+        // NameServer 业务参数配置类
         final NamesrvConfig namesrvConfig = new NamesrvConfig();
+        // NameServer 网络参数配置类
         final NettyServerConfig nettyServerConfig = new NettyServerConfig();
+        // 设置监听端口
         nettyServerConfig.setListenPort(9876);
         if (commandLine.hasOption('c')) {
+            // 通过获取命令行中的配置文件路径 -c configFile
             String file = commandLine.getOptionValue('c');
             if (file != null) {
                 InputStream in = new BufferedInputStream(new FileInputStream(file));
                 properties = new Properties();
                 properties.load(in);
+                // 将配置参数赋值给对应的配置类
                 MixAll.properties2Object(properties, namesrvConfig);
                 MixAll.properties2Object(properties, nettyServerConfig);
 
@@ -99,6 +107,7 @@ public class NamesrvStartup {
         }
 
         if (commandLine.hasOption('p')) {
+            // NameServer 启动时打印加载的配置信息，-p
             InternalLogger console = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_CONSOLE_NAME);
             MixAll.printObjectProperties(console, namesrvConfig);
             MixAll.printObjectProperties(console, nettyServerConfig);
